@@ -6,12 +6,18 @@
        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-	<bean id="pojo" class="Pojo">
-		<property name="str" value="aaaaa"></property>
+
+
+	<bean id="pojo1" class="Pojo3">
+		<property name="pojo" ref="pojo2"></property>
 	</bean>
 
-	<bean id="pojo2" class="Pojo2">
-		<property name="pojo" ref="pojo"></property>
+	<bean id="pojo2" class="Pojo3">
+		<property name="pojo" ref="pojo1"></property>
 	</bean>
+
+
+
+
 
 </beans>

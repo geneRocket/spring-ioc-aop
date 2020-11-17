@@ -1,11 +1,10 @@
 package beans.factory.xml;
 
-import beans.factory.BeanDefinitionStoreException;
+import beans.BeansException;
 import beans.factory.support.AbstractBeanDefinitionReader;
 import beans.factory.support.BeanDefinitionRegistry;
 import core.io.Resource;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,23 +19,23 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     }
 
     @Override
-    public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+    public int loadBeanDefinitions(Resource resource) throws BeansException {
         try {
             InputStream inputStream = resource.getInputStream();
             return doLoadBeanDefinitions(inputStream);
         } catch (IOException e) {
-            throw new BeanDefinitionStoreException(
+            throw new BeansException(
                     "IOException parsing XML document from " + resource, e);
         }
     }
 
-    protected int doLoadBeanDefinitions(InputStream inputStream) throws BeanDefinitionStoreException {
+    protected int doLoadBeanDefinitions(InputStream inputStream) throws BeansException {
         try {
             Document doc = doLoadDocument(inputStream);
             int count = registerBeanDefinitions(doc);
             return count;
         } catch (Exception e) {
-            throw new BeanDefinitionStoreException("doLoadBeanDefinitions error", e);
+            throw new BeansException("doLoadBeanDefinitions error", e);
         }
     }
 
@@ -46,7 +45,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         return docBuilder.parse(inputStream);
     }
 
-    public int registerBeanDefinitions(Document doc) throws BeanDefinitionStoreException {
+    public int registerBeanDefinitions(Document doc) throws BeansException {
         BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
         int countBefore = getRegistry().getBeanDefinitionCount();
         documentReader.registerBeanDefinitions(doc, getRegistry());

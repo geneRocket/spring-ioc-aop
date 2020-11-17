@@ -1,7 +1,7 @@
 package beans.factory.xml;
 
+import beans.BeansException;
 import beans.PropertyValue;
-import beans.factory.BeanDefinitionStoreException;
 import beans.factory.config.BeanDefinition;
 import beans.factory.config.BeanDefinitionHolder;
 import beans.factory.config.RuntimeBeanReference;
@@ -32,7 +32,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
     BeanDefinitionRegistry registry;
 
     @Override
-    public void registerBeanDefinitions(Document doc, BeanDefinitionRegistry registry) throws BeanDefinitionStoreException {
+    public void registerBeanDefinitions(Document doc, BeanDefinitionRegistry registry) throws BeansException {
         this.registry = registry;
         doRegisterBeanDefinitions(doc.getDocumentElement());
     }
@@ -175,7 +175,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
     void error(String message,Element element) {
         System.out.println(element);
-        throw new BeanDefinitionStoreException(message,null);
+        throw new BeansException(message,null);
     }
 
 

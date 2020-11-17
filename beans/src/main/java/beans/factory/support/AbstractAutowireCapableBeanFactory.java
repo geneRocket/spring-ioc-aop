@@ -19,9 +19,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     private boolean allowCircularReferences = true;
     private boolean allowRawInjectionDespiteWrapping = false;
 
-    private final Set<String> singletonsCurrentlyInCreation =
-            Collections.newSetFromMap(new ConcurrentHashMap<>(16));
-
 
 
     @Override
@@ -114,9 +111,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return targetType;
     }
 
-    public boolean isSingletonCurrentlyInCreation(String beanName) {
-        return this.singletonsCurrentlyInCreation.contains(beanName);
-    }
 
     protected Object doCreateBean(final String beanName, final BeanDefinition mbd)
             throws BeansException {

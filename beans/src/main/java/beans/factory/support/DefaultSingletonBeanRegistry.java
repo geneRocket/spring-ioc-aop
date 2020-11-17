@@ -59,7 +59,7 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     }
 
     public boolean isSingletonCurrentlyInCreation(String beanName) {
-        return this.singletonsCurrentlyInCreation.contains(beanName);
+        return singletonsCurrentlyInCreation.contains(beanName);
     }
 
     public Object getSingleton(String beanName) {
@@ -69,6 +69,8 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     protected Object getSingleton(String beanName, boolean allowEarlyReference) {
         Object singletonObject = this.singletonObjects.get(beanName);
+
+
         if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
             synchronized (this.singletonObjects) {
                 singletonObject = this.earlySingletonObjects.get(beanName);
@@ -89,8 +91,6 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
         synchronized (this.singletonObjects) {
             Object singletonObject = this.singletonObjects.get(beanName);
             if (singletonObject == null) {
-
-
                 beforeSingletonCreation(beanName);
                 boolean newSingleton = false;
 

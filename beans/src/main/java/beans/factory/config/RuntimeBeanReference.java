@@ -9,6 +9,6 @@ public class RuntimeBeanReference implements BeanReference{
 
     @Override
     public String getBeanName() {
-        return null;
+        return beanName;
     }
 }

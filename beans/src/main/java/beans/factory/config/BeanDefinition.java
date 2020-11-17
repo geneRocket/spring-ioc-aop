@@ -3,7 +3,6 @@ package beans.factory.config;
 import beans.PropertyValue;
 import core.util.ClassUtils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.List;

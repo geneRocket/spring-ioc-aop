@@ -1,7 +1,6 @@
 package beans.factory.support;
 
 import beans.BeansException;
-import beans.factory.NoSuchBeanDefinitionException;
 import beans.factory.config.BeanDefinition;
 import beans.factory.config.BeanPostProcessor;
 import beans.factory.config.ConfigurableBeanFactory;
@@ -77,7 +76,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
                         try {
                             getBean(dep);
                         }
-                        catch (NoSuchBeanDefinitionException ex) {
+                        catch (BeansException ex) {
                             throw new BeansException(
                                     "'" + beanName + "' depends on missing bean '" + dep + "'", ex);
                         }

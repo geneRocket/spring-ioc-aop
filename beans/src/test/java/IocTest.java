@@ -4,12 +4,37 @@ import core.io.ClassPathResource;
 import core.io.Resource;
 
 public class IocTest {
-    public static void main(String[] args) {
+    static void property_ioc_test(){
         Resource resource=new ClassPathResource("ioc_test.xml");
         DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(bf);
         reader.loadBeanDefinitions(resource);
+
+        //string属性注入
         Pojo bean = (Pojo) bf.getBean("pojo");
         System.out.println(bean.getStr());
+        //ref属性注入
+        Pojo2 pojo2 = (Pojo2)bf.getBean("pojo2");
+        System.out.println(pojo2.getPojo().getStr());
+
+    }
+
+    static void cyclic_dependence_ioc_test(){
+        Resource resource=new ClassPathResource("cyclic_dependence_ioc_test.xml");
+        DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(bf);
+        reader.loadBeanDefinitions(resource);
+        //循环依赖
+        Pojo3 bean = (Pojo3) bf.getBean("pojo1");
+        System.out.println(bean);
+        System.out.println(bean.getPojo());
+        System.out.println(bean.getPojo().getPojo());
+    }
+
+
+
+    public static void main(String[] args) {
+        property_ioc_test();
+        cyclic_dependence_ioc_test();
     }
 }

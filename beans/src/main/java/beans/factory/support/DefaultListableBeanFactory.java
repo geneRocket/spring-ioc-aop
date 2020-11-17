@@ -1,7 +1,6 @@
 package beans.factory.support;
 
 import beans.BeansException;
-import beans.factory.BeanDefinitionStoreException;
 import beans.factory.config.BeanDefinition;
 import beans.factory.config.ConfigurableListableBeanFactory;
 
@@ -34,7 +33,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
-            throws BeanDefinitionStoreException {
+            throws BeansException {
         BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
         if (existingDefinition != null) {
             this.beanDefinitionMap.put(beanName, beanDefinition);
