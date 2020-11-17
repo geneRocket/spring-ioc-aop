@@ -17,7 +17,11 @@ public class IocTest {
         Pojo2 pojo2 = (Pojo2)bf.getBean("pojo2");
         System.out.println(pojo2.getPojo().getStr());
 
+        //属性名字注入
+        Pojo4 pojo4 = (Pojo4)bf.getBean("pojo4");
+        System.out.println(pojo4.getPojo().getStr());
     }
+
 
     static void cyclic_dependence_ioc_test(){
         Resource resource=new ClassPathResource("cyclic_dependence_ioc_test.xml");

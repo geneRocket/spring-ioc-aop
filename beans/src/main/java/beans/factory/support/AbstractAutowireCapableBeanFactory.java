@@ -4,6 +4,7 @@ import beans.BeanWrapper;
 import beans.BeanWrapperImpl;
 import beans.BeansException;
 import beans.PropertyValue;
+import beans.factory.MutablePropertyValues;
 import beans.factory.config.*;
 import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import core.util.StringUtils;
@@ -274,11 +275,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             }
         }
 
-        List<PropertyValue> pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
+        List<PropertyValue>  pvs =  mbd.getPropertyValues().getPropertyValueList() ;
 
         int resolvedAutowireMode = mbd.getResolvedAutowireMode();
         if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
-            List<PropertyValue>  newPvs =  new ArrayList<PropertyValue>(pvs);
+            List<PropertyValue>  newPvs = new ArrayList<>(pvs);
             // Add property values based on autowire by name if applicable.
             if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
                 autowireByName(beanName, mbd, bw, newPvs);
@@ -303,21 +304,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected String[] unsatisfiedNonSimpleProperties(BeanDefinition mbd, BeanWrapper bw) {
 
         Set<String> result = new TreeSet<>();
-        List<PropertyValue> pvs = mbd.getPropertyValues();
+        MutablePropertyValues pvs=mbd.getPropertyValues();
         PropertyDescriptor[] pds = bw.getPropertyDescriptors();
         for (PropertyDescriptor pd : pds) {
-            if (pd.getWriteMethod() != null) {
-
-                boolean containName=false;
-                for (PropertyValue propertyValue:pvs) {
-                    if(propertyValue.getName().equals(pd.getName())){
-                        containName=true;
-                        break;
-                    }
-                }
-
-                if(!containName)
-                    result.add(pd.getName());
+            if (pd.getWriteMethod() != null && !pvs.contains(pd.getName())) {
+                result.add(pd.getName());
             }
         }
         return StringUtils.toStringArray(result);
@@ -325,7 +316,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     protected void autowireByName(
             String beanName, BeanDefinition mbd, BeanWrapper bw, List<PropertyValue> pvs) {
-
         String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
 
 
@@ -352,7 +342,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         for (PropertyValue pv : original) {
             String propertyName = pv.getName();
             Object value = pv.getValue();
-            Object resolvedValue = null;
+            Object resolvedValue;
 
             if (value instanceof RuntimeBeanReference) {
                 RuntimeBeanReference ref = (RuntimeBeanReference) value;
@@ -364,7 +354,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 resolvedValue = typedStringValue.getValue();
             }
             else {
-                throw new BeansException("value null");
+                resolvedValue=value;
             }
 
             try {
@@ -374,7 +364,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 throw new BeansException("Error setting property values", ex);
             }
         }
-
-
     }
+
+
 }

@@ -121,7 +121,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
         }
         Object val = parsePropertyValue(ele, bd, propertyName);
         PropertyValue pv = new PropertyValue(propertyName, val);
-        bd.getPropertyValues().add(pv);
+        bd.getPropertyValues().getPropertyValueList().add(pv);
 
     }
 

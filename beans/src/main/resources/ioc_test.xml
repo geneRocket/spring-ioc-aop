@@ -14,4 +14,7 @@
 		<property name="pojo" ref="pojo"></property>
 	</bean>
 
+	<bean id="pojo4" class="Pojo4" autowire="byName">
+	</bean>
+
 </beans>

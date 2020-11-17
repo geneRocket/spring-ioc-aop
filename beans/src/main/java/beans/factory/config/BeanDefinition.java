@@ -1,6 +1,7 @@
 package beans.factory.config;
 
 import beans.PropertyValue;
+import beans.factory.MutablePropertyValues;
 import core.util.ClassUtils;
 
 import java.lang.reflect.Executable;
@@ -21,7 +22,7 @@ public class BeanDefinition {
     private int autowireMode = AUTOWIRE_NO;
 
     private String[] dependsOn;
-    private List<PropertyValue> propertyValues;
+    private MutablePropertyValues propertyValues= new MutablePropertyValues();
     public volatile Boolean beforeInstantiationResolved;
     public volatile Class<?> resolvedTargetType;
     public final Object constructorArgumentLock = new Object();
@@ -77,10 +78,7 @@ public class BeanDefinition {
     public String[] getDependsOn(){
         return this.dependsOn;
     }
-    public List<PropertyValue> getPropertyValues(){
-        if (this.propertyValues == null) {
-            this.propertyValues = new ArrayList<>();
-        }
+    public MutablePropertyValues getPropertyValues(){
         return this.propertyValues;
     }
 
