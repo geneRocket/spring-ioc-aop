@@ -4,17 +4,15 @@ import beans.BeanWrapper;
 import beans.BeanWrapperImpl;
 import beans.BeansException;
 import beans.PropertyValue;
+import beans.factory.BeanFactoryAware;
 import beans.factory.MutablePropertyValues;
 import beans.factory.config.*;
-import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import core.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
     private boolean allowCircularReferences = true;
@@ -45,7 +43,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
         try {
             Object beanInstance = doCreateBean(beanName, mbdToUse);
-
             return beanInstance;
         }
         catch (BeansException ex) {
@@ -171,8 +168,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return exposedObject;
     }
 
+    private void invokeAwareMethods(final String beanName, final Object bean) {
+            if (bean instanceof BeanFactoryAware) {
+                ((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
+            }
+
+    }
+
     protected Object initializeBean(final String beanName, final Object bean, BeanDefinition mbd) {
 
+        invokeAwareMethods(beanName,bean);
 
         Object wrappedBean = bean;
         wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);

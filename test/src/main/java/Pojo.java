@@ -9,9 +9,6 @@ public class Pojo {
         this.str = str;
     }
 
-    public void test(){
-        System.out.println("test");
-    }
 
 
 }

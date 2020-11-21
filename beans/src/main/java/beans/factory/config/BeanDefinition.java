@@ -1,12 +1,9 @@
 package beans.factory.config;
 
-import beans.PropertyValue;
 import beans.factory.MutablePropertyValues;
 import core.util.ClassUtils;
 
 import java.lang.reflect.Executable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BeanDefinition {
     String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;

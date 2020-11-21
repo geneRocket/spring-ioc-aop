@@ -15,15 +15,21 @@ import org.w3c.dom.NodeList;
 
 
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
+    public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
+    public static final String AUTO_PROXY_CREATOR_BEAN_NAME = "org.springframework.aop.config.internalAutoProxyCreator";
+
     public static final String BEAN_ELEMENT = "bean";
     public static final String ID_ATTRIBUTE = "id";
     public static final String CLASS_ATTRIBUTE = "class";
     public static final String SCOPE_ATTRIBUTE = "scope";
     public static final String AUTOWIRE_ATTRIBUTE = "autowire";
+
     public static final String DEPENDS_ON_ATTRIBUTE = "depends-on";
     public static final String AUTOWIRE_BY_NAME_VALUE = "byName";
     public static final String AUTOWIRE_BY_TYPE_VALUE = "byType";
+
     public static final String MULTI_VALUE_ATTRIBUTE_DELIMITERS = ",; ";
+
     public static final String PROPERTY_ELEMENT = "property";
     public static final String REF_ATTRIBUTE = "ref";
     public static final String VALUE_ATTRIBUTE = "value";
@@ -43,9 +49,22 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
             Node node = nl.item(i);
             if (node instanceof Element) {
                 Element ele = (Element) node;
-                processBeanDefinition(ele);
-
+                if (isDefaultNamespace(ele)) {
+                    processBeanDefinition(ele);
+                }
+                else {
+                    parseCustomElement(ele);
+                }
             }
+        }
+    }
+
+    public void parseCustomElement(Element ele) {
+        String namespaceUri = getNamespaceURI(ele);
+        if(namespaceUri.equals("http://www.springframework.org/schema/aop")){
+            BeanDefinition bd=new BeanDefinition();
+            bd.setBeanClassName("aop.framework.autoproxy.AnnotationAwareAspectJAutoProxyCreator");
+            registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME,bd);
         }
     }
 
@@ -171,6 +190,18 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
             error(elementName + " must specify a ref or value", ele);
             return null;
         }
+    }
+
+    public boolean isDefaultNamespace(Node node) {
+        return isDefaultNamespace(getNamespaceURI(node));
+    }
+
+    public boolean isDefaultNamespace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri));
+    }
+
+    public String getNamespaceURI(Node node) {
+        return node.getNamespaceURI();
     }
 
     void error(String message,Element element) {

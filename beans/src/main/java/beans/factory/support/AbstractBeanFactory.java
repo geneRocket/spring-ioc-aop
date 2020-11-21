@@ -193,4 +193,59 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     protected abstract boolean containsBeanDefinition(String beanName);
 
+
+    protected boolean isTypeMatch(String beanName, Class<?> typeToMatch)
+            throws BeansException {
+
+        // Check manually registered singletons.
+        Object beanInstance = getSingleton(beanName, false);
+        if (beanInstance != null) {
+            if (typeToMatch.isInstance(beanInstance)) {
+                // Direct match for exposed instance?
+                return true;
+            }
+            return false;
+        }
+        else if (containsSingleton(beanName) && !containsBeanDefinition(beanName)) {
+            // null instance registered
+            return false;
+        }
+        // Retrieve corresponding bean definition.
+        BeanDefinition mbd = getBeanDefinition(beanName);
+
+        // Attempt to predict the bean type
+        Class<?> predictedType = predictBeanType(beanName, mbd);
+
+        // If we don't have a bean type, fallback to the predicted type
+        return typeToMatch.isAssignableFrom(predictedType);
+    }
+
+    protected Class<?> predictBeanType(String beanName, BeanDefinition mbd) {
+        Class<?> targetType = mbd.getTargetType();
+        if (targetType != null) {
+            return targetType;
+        }
+        return resolveBeanClass(mbd, beanName);
+    }
+
+    public Class<?> getType(String beanName) throws BeansException {
+
+        // Check manually registered singletons.
+        Object beanInstance = getSingleton(beanName, false);
+        if (beanInstance != null) {
+            return beanInstance.getClass();
+        }
+        // No singleton instance found -> check bean definition.
+        BeanDefinition mbd = getBeanDefinition(beanName);
+
+        // Check decorated bean definition, if any: We assume it'll be easier
+        // to determine the decorated bean's type than the proxy's type.
+        if (mbd!=null) {
+            Class<?> targetClass = predictBeanType(beanName, mbd);
+            if (targetClass != null) {
+                return targetClass;
+            }
+        }
+        throw new BeansException("not found class");
+    }
 }

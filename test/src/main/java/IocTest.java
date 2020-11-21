@@ -1,5 +1,6 @@
 import beans.factory.support.DefaultListableBeanFactory;
 import beans.factory.xml.XmlBeanDefinitionReader;
+import context.support.ClassPathXmlApplicationContext;
 import core.io.ClassPathResource;
 import core.io.Resource;
 
@@ -35,10 +36,15 @@ public class IocTest {
         System.out.println(bean.getPojo().getPojo());
     }
 
-
+    static void aop_test(){
+        ClassPathXmlApplicationContext bf = new ClassPathXmlApplicationContext("aop_test.xml");
+        Printer pojo=(Printer)bf.getBean("printer");
+        pojo.test();
+    }
 
     public static void main(String[] args) {
         property_ioc_test();
         cyclic_dependence_ioc_test();
+        aop_test();
     }
 }

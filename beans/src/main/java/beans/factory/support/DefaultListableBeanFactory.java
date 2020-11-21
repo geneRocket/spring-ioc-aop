@@ -3,6 +3,7 @@ package beans.factory.support;
 import beans.BeansException;
 import beans.factory.config.BeanDefinition;
 import beans.factory.config.ConfigurableListableBeanFactory;
+import core.util.StringUtils;
 
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
             throws BeansException {
+        assert StringUtils.hasText(beanName);
+
         BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
         if (existingDefinition != null) {
             this.beanDefinitionMap.put(beanName, beanDefinition);
@@ -43,5 +46,24 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
                 this.beanDefinitionMap.put(beanName, beanDefinition);
                 this.beanDefinitionNames.add(beanName);
         }
+    }
+
+    public String[] getBeanNamesForType(Class<?> type) {
+        List<String> result = new ArrayList<>();
+        // Check all bean definitions.
+        for (String beanName : this.beanDefinitionNames) {
+
+            try {
+                boolean matchFound=isTypeMatch(beanName, type);
+
+                if (matchFound) {
+                    result.add(beanName);
+                }
+
+            } catch (BeansException ex) {
+                throw ex;
+            }
+        }
+        return result.toArray(new String [0]);
     }
 }

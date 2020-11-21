@@ -9,6 +9,10 @@
 - [ ] 自动类型注入
 
 ## aop
+- [x] 注解配置切点
+- [x] before
+- [x] after
+- [x] JdkProxy
 
 
 # 源码解析

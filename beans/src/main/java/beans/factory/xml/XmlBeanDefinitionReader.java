@@ -41,6 +41,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     protected Document doLoadDocument(InputStream inputStream) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);//注意一下。。。小坑
         DocumentBuilder docBuilder = factory.newDocumentBuilder();
         return docBuilder.parse(inputStream);
     }

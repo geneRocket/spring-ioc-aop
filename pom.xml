@@ -12,7 +12,11 @@
         <module>core</module>
         <module>beans</module>
         <module>test</module>
+        <module>context</module>
+        <module>aop</module>
     </modules>
+
+
 
 
 </project>
