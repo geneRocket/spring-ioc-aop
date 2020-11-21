@@ -40,6 +40,7 @@ public class IocTest {
         ClassPathXmlApplicationContext bf = new ClassPathXmlApplicationContext("aop_test.xml");
         Printer pojo=(Printer)bf.getBean("printer");
         pojo.test();
+        pojo.test2();
     }
 
     public static void main(String[] args) {

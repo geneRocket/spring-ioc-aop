@@ -33,7 +33,7 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
 
 
             if (chain.isEmpty()) {
-                retVal = method.invoke(args);
+                retVal = method.invoke(target,args);
             }
             else {
                 MethodInvocation invocation =
@@ -47,7 +47,4 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
             return retVal;
 
     }
-
-
-
 }
