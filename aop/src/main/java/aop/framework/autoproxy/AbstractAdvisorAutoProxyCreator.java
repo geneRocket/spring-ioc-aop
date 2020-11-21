@@ -22,9 +22,6 @@ public abstract class AbstractAdvisorAutoProxyCreator extends  AbstractAutoProxy
     protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName, Object target) {
         List<Advisor> candidateAdvisors = findCandidateAdvisors();
         List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
-        if (!eligibleAdvisors.isEmpty()) {
-            //eligibleAdvisors = sortAdvisors(eligibleAdvisors);
-        }
         return eligibleAdvisors;
     }
 

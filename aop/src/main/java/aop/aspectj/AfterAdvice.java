@@ -1,7 +1,7 @@
 package aop.aspectj;
 
+import aop.aopalliance.intercept.Joinpoint;
 import aop.aopalliance.intercept.MethodInterceptor;
-import aop.aopalliance.intercept.MethodInvocation;
 
 import java.lang.reflect.Method;
 
@@ -13,7 +13,7 @@ public class AfterAdvice extends AbstractAdvice implements MethodInterceptor {
     }
 
     @Override
-    public Object invoke(MethodInvocation mi) throws Throwable {
+    public Object invoke(Joinpoint mi) throws Throwable {
         Object ret=mi.proceed();
         invokeAdviceMethod();
         return ret;

@@ -81,8 +81,7 @@ public class InstantiationModelAwarePointcutAdvisorImpl implements Pointcut,Poin
         try {
             return pointcutExpression.couldMatchJoinPointsInType(targetClass);
         }
-        catch (Throwable ex) {
-            //logger.debug("PointcutExpression matching rejected target class", ex);
+        catch (Throwable ignored) {
         }
         return false;
     }

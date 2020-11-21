@@ -1,6 +1,6 @@
 package aop.framework;
 
-import aop.aopalliance.intercept.MethodInvocation;
+import aop.aopalliance.intercept.Joinpoint;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -36,15 +36,12 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
                 retVal = method.invoke(target,args);
             }
             else {
-                MethodInvocation invocation =
+                Joinpoint invocation =
                         new ReflectiveMethodInvocation(target, method, args, chain);
                 retVal = invocation.proceed();
             }
 
-            // Massage return value if necessary.
-            Class<?> returnType = method.getReturnType();
-
-            return retVal;
+        return retVal;
 
     }
 }

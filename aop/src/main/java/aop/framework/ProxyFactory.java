@@ -21,7 +21,7 @@ public class ProxyFactory extends AdvisedSupport {
                 return new JdkDynamicAopProxy(config);
             }
             //return new ObjenesisCglibAopProxy(config);
-            return new JdkDynamicAopProxy(config);
+            throw new BeansException("not support cglib");
 
         }
         else {

@@ -24,13 +24,6 @@ public class AdvisedSupport extends ProxyConfig {
     Object target;
 
 
-    public void setInterfaces(Class<?>... interfaces) {
-        this.interfaces.clear();
-        for (Class<?> ifc : interfaces) {
-            addInterface(ifc);
-        }
-    }
-
     public void addInterface(Class<?> intf) {
         if (!intf.isInterface()) {
             throw new IllegalArgumentException("[" + intf.getName() + "] is not an interface");

@@ -1,12 +1,12 @@
 package aop.framework;
 
+import aop.aopalliance.intercept.Joinpoint;
 import aop.aopalliance.intercept.MethodInterceptor;
-import aop.aopalliance.intercept.MethodInvocation;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class ReflectiveMethodInvocation implements MethodInvocation{
+public class ReflectiveMethodInvocation implements Joinpoint {
     protected final Method method;
     Object target;
     protected Object[] args;
@@ -35,18 +35,4 @@ public class ReflectiveMethodInvocation implements MethodInvocation{
         return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
     }
 
-    @Override
-    public Object getThis() {
-        return target;
-    }
-
-    @Override
-    public Method getMethod() {
-        return this.method;
-    }
-
-    @Override
-    public Object[] getArguments() {
-        return args;
-    }
 }
