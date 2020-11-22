@@ -4,7 +4,6 @@ import beans.BeansException;
 import beans.factory.config.BeanDefinition;
 import beans.factory.config.BeanPostProcessor;
 import beans.factory.config.ConfigurableBeanFactory;
-import beans.factory.config.InstantiationAwareBeanPostProcessor;
 
 
 import java.util.HashSet;
@@ -15,7 +14,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     private final ThreadLocal<Object> prototypesCurrentlyInCreation = new ThreadLocal<>();
     private final List<BeanPostProcessor> beanPostProcessors = new CopyOnWriteArrayList<>();
-    private volatile boolean hasInstantiationAwareBeanPostProcessors;
 
 
     @Override
@@ -23,16 +21,11 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         // Remove from old position, if any
         this.beanPostProcessors.remove(beanPostProcessor);
         // Track whether it is instantiation/destruction aware
-        if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
-            this.hasInstantiationAwareBeanPostProcessors = true;
-        }
+
         // Add to end of list
         this.beanPostProcessors.add(beanPostProcessor);
     }
 
-    protected boolean hasInstantiationAwareBeanPostProcessors() {
-        return this.hasInstantiationAwareBeanPostProcessors;
-    }
 
 
 

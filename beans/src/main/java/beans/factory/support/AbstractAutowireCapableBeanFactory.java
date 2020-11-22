@@ -30,16 +30,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Class<?> resolvedClass = resolveBeanClass(bd, beanName);
 
 
-        try {
-            // Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-            Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
-            if (bean != null) {
-                return bean;
-            }
-        }
-        catch (Throwable ex) {
-            throw new BeansException("BeanPostProcessor before instantiation of bean failed", ex);
-        }
+
 
         try {
             Object beanInstance = doCreateBean(beanName, mbdToUse);
@@ -55,36 +46,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
     }
 
-    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition mbd) {
-        Object bean = null;
-        if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
-            // Make sure bean class is actually resolved at this point.
-            if (hasInstantiationAwareBeanPostProcessors()) {
-                Class<?> targetType = determineTargetType(beanName, mbd);
-                if (targetType != null) {
-                    bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
-                    if (bean != null) {
-                        bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
-                    }
-                }
-            }
-            mbd.beforeInstantiationResolved = (bean != null);
-        }
-        return bean;
-    }
 
-    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
-        for (BeanPostProcessor bp : getBeanPostProcessors()) {
-            if (bp instanceof InstantiationAwareBeanPostProcessor) {
-                InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
-                Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);
-                if (result != null) {
-                    return result;
-                }
-            }
-        }
-        return null;
-    }
 
     public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
             throws BeansException {
@@ -265,20 +227,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     protected void populateBean(String beanName, BeanDefinition mbd,BeanWrapper bw) {
 
-
-        // Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
-        // state of the bean before properties are set. This can be used, for example,
-        // to support styles of field injection.
-        if (hasInstantiationAwareBeanPostProcessors()) {
-            for (BeanPostProcessor bp : getBeanPostProcessors()) {
-                if (bp instanceof InstantiationAwareBeanPostProcessor) {
-                    InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
-                    if (!ibp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
-                        return;
-                    }
-                }
-            }
-        }
 
         List<PropertyValue>  pvs =  mbd.getPropertyValues().getPropertyValueList() ;
 

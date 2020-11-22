@@ -8,7 +8,6 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
     private Resource configResources;
 
     public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
-        super();
         this.configResources = new ClassPathResource(configLocation);
         refresh();
     }
