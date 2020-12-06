@@ -16,6 +16,7 @@
 - [x] before
 - [x] after
 - [x] JdkProxy
+- [x] CglibProxy
 
 # ioc源码解析
 

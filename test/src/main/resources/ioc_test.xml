@@ -6,12 +6,12 @@
        	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-	<bean id="pojo" class="Pojo">
+	<bean id="pojo1" class="Pojo1">
 		<property name="str" value="aaaaa"></property>
 	</bean>
 
 	<bean id="pojo2" class="Pojo2">
-		<property name="pojo" ref="pojo"></property>
+		<property name="pojo1" ref="pojo1"></property>
 	</bean>
 
 	<bean id="pojo4" class="Pojo4" autowire="byName">

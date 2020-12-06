@@ -10,7 +10,7 @@ public class ProxyFactory extends AdvisedSupport {
         return createAopProxy(this).getProxy();
     }
 
-    public AopProxy createAopProxy(AdvisedSupport config) throws BeansException {
+    static public AopProxy createAopProxy(AdvisedSupport config) throws BeansException {
         if (config.isProxyTargetClass()) {
             Class<?> targetClass = config.getTargetClass();
             if (targetClass == null) {
@@ -20,8 +20,7 @@ public class ProxyFactory extends AdvisedSupport {
             if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
                 return new JdkDynamicAopProxy(config);
             }
-            //return new ObjenesisCglibAopProxy(config);
-            throw new BeansException("not support cglib");
+            return new CglibAopProxy(config);
 
         }
         else {

@@ -14,14 +14,11 @@ import java.util.Collection;
 import java.util.List;
 
 public class AdvisedSupport extends ProxyConfig {
-    /**
-     * Interfaces to be implemented by the proxy. Held in List to keep the order
-     * of registration, to create JDK proxy with specified order of interfaces.
-     */
+
     private List<Class<?>> interfaces = new ArrayList<>();
     private List<Advisor> advisors = new ArrayList<>();
 
-    Object target;
+    private Object target;
 
 
     public void addInterface(Class<?> intf) {
@@ -43,6 +40,10 @@ public class AdvisedSupport extends ProxyConfig {
 
     public void setTarget(Object target) {
         this.target = target;
+    }
+
+    public Object getTarget() {
+        return target;
     }
 
     public Class<?> getTargetClass() {

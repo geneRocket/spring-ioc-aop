@@ -1,4 +1,4 @@
-public class Pojo {
+public class Pojo1 {
     String str;
 
     public String getStr() {

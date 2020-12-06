@@ -1,11 +1,11 @@
 public class Pojo4 {
-    Pojo pojo;
+    Pojo1 pojo1;
 
-    public Pojo getPojo() {
-        return pojo;
+    public Pojo1 getPojo1() {
+        return pojo1;
     }
 
-    public void setPojo(Pojo pojo) {
-        this.pojo = pojo;
+    public void setPojo1(Pojo1 pojo1) {
+        this.pojo1 = pojo1;
     }
 }

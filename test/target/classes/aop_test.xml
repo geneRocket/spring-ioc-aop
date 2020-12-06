@@ -13,6 +13,9 @@
 	<bean id="printer" class="PrinterImpl">
 	</bean>
 
+	<bean id="printer2" class="PrinterClass">
+	</bean>
+
 	<bean id="logAspect" class="LogAspect"></bean>
 
 

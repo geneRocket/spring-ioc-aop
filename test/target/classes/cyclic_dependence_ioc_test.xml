@@ -9,11 +9,11 @@
 
 
 	<bean id="pojo1" class="Pojo3">
-		<property name="pojo" ref="pojo2"></property>
+		<property name="pojo3" ref="pojo2"></property>
 	</bean>
 
 	<bean id="pojo2" class="Pojo3">
-		<property name="pojo" ref="pojo1"></property>
+		<property name="pojo3" ref="pojo1"></property>
 	</bean>
 
 
