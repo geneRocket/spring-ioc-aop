@@ -1,6 +1,7 @@
 package core.io;
 
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,6 +18,20 @@ public class ClassPathResource implements Resource {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return this.classLoader.getResourceAsStream(this.path);
+
+        InputStream inputStream= this.classLoader.getResourceAsStream(this.path);
+        if(inputStream==null){
+            inputStream=new FileInputStream(this.path);
+        }
+        if(inputStream==null){
+            throw new IOException("path error");
+        }
+
+        return inputStream;
+    }
+
+    @Override
+    public String getPath() {
+        return this.path;
     }
 }

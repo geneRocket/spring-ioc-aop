@@ -2,6 +2,7 @@ package beans.factory.config;
 
 import beans.factory.MutablePropertyValues;
 import core.util.ClassUtils;
+import core.util.ReflectionUtils;
 
 import java.lang.reflect.Executable;
 
@@ -25,10 +26,14 @@ public class BeanDefinition {
     public final Object constructorArgumentLock = new Object();
     public Executable resolvedConstructorOrFactoryMethod;
 
+    public BeanDefinition(){}
 
+    public BeanDefinition(String beanClassName) throws ClassNotFoundException {
+        this.beanClass= Class.forName( beanClassName);
+    }
 
-    public void setBeanClassName(String beanClassName){
-        this.beanClass = beanClassName;
+    public void setBeanClassName(String beanClassName) throws ClassNotFoundException {
+        this.beanClass= Class.forName( beanClassName);
     }
 
     String getBeanClassName(){
@@ -45,7 +50,7 @@ public class BeanDefinition {
         return (this.beanClass instanceof Class);
     }
 
-    public Class<?> getBeanClass() throws IllegalStateException {
+    public Class<?> getBeanClass() throws IllegalStateException, ClassNotFoundException {
         Object beanClassObject = this.beanClass;
         if (beanClassObject == null) {
             throw new IllegalStateException("No bean class specified on bean definition");

@@ -7,6 +7,7 @@ import context.ConfigurableApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractApplicationContext implements ConfigurableApplicationContext {
     private final Object startupShutdownMonitor = new Object();
@@ -18,10 +19,23 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
             // Tell the subclass to refresh the internal bean factory.
             ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
+            prepareBeanFactory(beanFactory);
+
+
             // Register bean processors that intercept bean creation.
             registerBeanPostProcessors(beanFactory);
 
+            finishBeanFactoryInitialization(beanFactory);
         }
+    }
+
+    protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+
+    }
+
+        protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
+        beanFactory.preInstantiateSingletons();
     }
 
     protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory){
@@ -72,6 +86,11 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
 
     public Class<?> getType(String name) throws BeansException {
         return getBeanFactory().getType(name);
+    }
+
+    @Override
+    public <T> Map<String, T> getBeansOfType(Class<T> type) throws BeansException {
+        return getBeanFactory().getBeansOfType(type);
     }
 
 }

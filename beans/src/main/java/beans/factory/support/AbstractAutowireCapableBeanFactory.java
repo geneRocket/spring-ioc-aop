@@ -5,6 +5,7 @@ import beans.BeanWrapperImpl;
 import beans.BeansException;
 import beans.PropertyValue;
 import beans.factory.BeanFactoryAware;
+import beans.factory.InitializingBean;
 import beans.factory.MutablePropertyValues;
 import beans.factory.config.*;
 import core.util.StringUtils;
@@ -137,12 +138,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     }
 
+    protected void invokeInitMethods(String beanName, final Object bean,BeanDefinition mbd)throws Throwable{
+        boolean isInitializingBean = (bean instanceof InitializingBean);
+        if(isInitializingBean){
+            ((InitializingBean) bean).afterPropertiesSet();
+        }
+    }
+
     protected Object initializeBean(final String beanName, final Object bean, BeanDefinition mbd) {
 
         invokeAwareMethods(beanName,bean);
 
         Object wrappedBean = bean;
         wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+
+        try {
+            invokeInitMethods(beanName, wrappedBean, mbd);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
 
         wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 
@@ -198,7 +212,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         synchronized (bd.constructorArgumentLock) {
             constructorToUse = (Constructor<?>) bd.resolvedConstructorOrFactoryMethod;
             if (constructorToUse == null) {
-                final Class<?> clazz = bd.getBeanClass();
+                final Class<?> clazz;
+                try {
+                    clazz = bd.getBeanClass();
+                } catch (ClassNotFoundException ex) {
+                    throw new BeansException("bd.getBeanClass() fail", ex);
+                }
                 if (clazz.isInterface()) {
                     throw new BeansException("Specified class is an interface");
                 }
@@ -279,7 +298,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 registerDependentBean(propertyName, beanName);
             }
             else {
-                System.out.println("Not autowiring property '" + propertyName + "' of bean '" + beanName +
+                throw new BeansException("Not autowiring property '" + propertyName + "' of bean '" + beanName +
                             "' by name: no matching bean found");
             }
         }

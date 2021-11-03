@@ -1,5 +1,6 @@
 package beans.factory.xml;
 
+import beans.BeanUtils;
 import beans.BeansException;
 import beans.PropertyValue;
 import beans.factory.config.BeanDefinition;
@@ -14,9 +15,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
+import java.util.HashMap;
+import java.util.Set;
+
+
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
     public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
     public static final String AUTO_PROXY_CREATOR_BEAN_NAME = "org.springframework.aop.config.internalAutoProxyCreator";
+
+    public static final String HANDLER_MAPPING_BEAN_NAME = "web.servlet.mvc.method.annotation.RequestMappingHandlerMapping";
+    public static final String HANDLER_ADAPTER_BEAN_NAME = "web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter";
+
 
     public static final String BEAN_ELEMENT = "bean";
     public static final String ID_ATTRIBUTE = "id";
@@ -35,7 +44,23 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
     public static final String VALUE_ATTRIBUTE = "value";
     public static final String NAME_ATTRIBUTE = "name";
 
+
+
     BeanDefinitionRegistry registry;
+
+    HashMap<String,NamespaceHandler> namespaceHandlers= new HashMap<>();
+
+    public DefaultBeanDefinitionDocumentReader(){
+        try {
+            Class clazz=Class.forName("context.config.ContextNamespaceHandler");
+            NamespaceHandler namespaceHandler = (NamespaceHandler)BeanUtils.instantiateClass(clazz);
+            namespaceHandler.init();
+            namespaceHandlers.put("http://www.springframework.org/schema/context",namespaceHandler);
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void registerBeanDefinitions(Document doc, BeanDefinitionRegistry registry) throws BeansException {
@@ -63,9 +88,37 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
         String namespaceUri = getNamespaceURI(ele);
         if(namespaceUri.equals("http://www.springframework.org/schema/aop")){
             BeanDefinition bd=new BeanDefinition();
-            bd.setBeanClassName("aop.framework.autoproxy.AnnotationAwareAspectJAutoProxyCreator");
+            try {
+                bd.setBeanClassName("aop.framework.autoproxy.AnnotationAwareAspectJAutoProxyCreator");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME,bd);
         }
+        else if(namespaceUri.equals("http://www.springframework.org/schema/context")&& ele.getLocalName().equals("component-scan")){
+            //找出需要搜索的包，并注册controller
+            NamespaceHandler namespaceHandler=this.namespaceHandlers.get(namespaceUri);
+            namespaceHandler.parse(ele,this.registry);
+        }
+        else if(namespaceUri.equals("http://www.springframework.org/schema/mvc") && ele.getLocalName().equals("annotation-driven")){
+            BeanDefinition handlerMappingDef = null;
+            try {
+                handlerMappingDef = new BeanDefinition(HANDLER_MAPPING_BEAN_NAME);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            this.registry.registerBeanDefinition(HANDLER_MAPPING_BEAN_NAME , handlerMappingDef);
+
+            BeanDefinition handlerAdapterDef = null;
+            try {
+                handlerAdapterDef = new BeanDefinition(HANDLER_ADAPTER_BEAN_NAME);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            this.registry.registerBeanDefinition(HANDLER_ADAPTER_BEAN_NAME , handlerAdapterDef);
+
+        }
+
     }
 
     protected void processBeanDefinition(Element ele) {
@@ -82,7 +135,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
         String beanName = ele.getAttribute(ID_ATTRIBUTE);
         String beanClassName = ele.getAttribute(CLASS_ATTRIBUTE).trim();
         BeanDefinition beanDefinition = new BeanDefinition();
-        beanDefinition.setBeanClassName(beanClassName);
+        try {
+            beanDefinition.setBeanClassName(beanClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         parseBeanDefinitionAttributes(ele, beanDefinition);
         parsePropertyElements(ele,beanDefinition);
         return new BeanDefinitionHolder(beanDefinition,beanName);

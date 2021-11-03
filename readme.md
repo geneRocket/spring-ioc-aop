@@ -18,15 +18,21 @@
 - [x] JdkProxy
 - [x] CglibProxy
 
+## mvc
+- [x] 路由注册
+- [x] 路由分发
+- [x] 参数获取
+- [x] 返回json
+
 # ioc源码解析
 
-之前在博客写的两篇文章
+
 
 https://blog.csdn.net/qq789045/article/details/105934947
 
 https://blog.csdn.net/qq789045/article/details/108700449
 
-# aop结构分析
+# aop源码分析
 
 ## 入口
 
@@ -59,3 +65,9 @@ advice是执行控制执行时机的，可以在被代理函数之前，也可�
 
 一条advice链表表示要代理的方法，遍历所有advice，然后被代理的函数执行一次。
 after的话，先不执行切点函数，继续遍历下一个advice，然后通过递归返回，再执行。
+
+
+#mvc源码分析
+
+https://blog.csdn.net/qq789045/article/details/121171060
+

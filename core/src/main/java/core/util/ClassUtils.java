@@ -6,6 +6,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ClassUtils {
+    private static final char PACKAGE_SEPARATOR = '.';
+
+    /** The path separator character: '/' */
+    private static final char PATH_SEPARATOR = '/';
+
     public static final String CGLIB_CLASS_SEPARATOR = "$$";
 
     private static final Class<?>[] EMPTY_CLASS_ARRAY = {};
@@ -23,7 +28,9 @@ public class ClassUtils {
 
     public static Set<Class<?>> getAllInterfacesForClassAsSet(Class<?> clazz) {
         if (clazz.isInterface() ) {
-            return Collections.singleton(clazz);
+            Set<Class<?>> interfaces = new LinkedHashSet<>();
+            interfaces.add(clazz);
+            return interfaces;
         }
         Set<Class<?>> interfaces = new LinkedHashSet<>();
         Class<?> current = clazz;
@@ -54,5 +61,9 @@ public class ClassUtils {
             }
         }
         return clazz;
+    }
+
+    public static String convertResourcePathToClassName(String resourcePath) {
+        return resourcePath.replace(PATH_SEPARATOR, PACKAGE_SEPARATOR);
     }
 }

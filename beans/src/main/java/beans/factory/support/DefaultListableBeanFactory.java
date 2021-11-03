@@ -6,7 +6,10 @@ import beans.factory.config.ConfigurableListableBeanFactory;
 import core.util.StringUtils;
 
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -65,5 +68,30 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
             }
         }
         return result.toArray(new String [0]);
+    }
+
+    public <T> Map<String, T> getBeansOfType(Class<T> type)
+            throws BeansException {
+        String[] beanNames = getBeanNamesForType(type);
+        Map<String, T> result = new LinkedHashMap<>(beanNames.length);
+        for (String beanName : beanNames) {
+            try {
+                Object beanInstance = getBean(beanName);
+                result.put(beanName, (T) beanInstance);
+            } catch (BeansException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    public void preInstantiateSingletons() throws BeansException{
+        List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
+        for (String beanName : beanNames) {
+            BeanDefinition bd = getBeanDefinition(beanName);
+            if (bd.isSingleton()) {
+                getBean(beanName);
+            }
+        }
     }
 }
